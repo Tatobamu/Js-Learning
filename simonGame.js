@@ -7,21 +7,30 @@ const celeste = document.getElementById('celeste')
 
       class Juego {
         constructor() {
+          this.inicializar = this.inicializar.bind(this)
           this.inicializar()
           this.generarSecuencia()
-          setTimeout(this.siguienteNivel, 500)          
+          setTimeout(this.siguienteNivel, 500)
         }
 
         inicializar() {
           this.siguienteNivel = this.siguienteNivel.bind(this)
           this.elegirColor = this.elegirColor.bind(this)
-          btnEmpezar.classList.add('hide')
+          this.toggleBtnEmpezar()
           this.nivel = 1
           this.colores = {
             celeste,
             violeta,
             naranja,
             verde
+          }
+        }
+
+        toggleBtnEmpezar() {
+          if (btnEmpezar.classList.contains('hide')) {
+            btnEmpezar.classList.remove('hide')
+          } else {
+            btnEmpezar.classList.add('hide')
           }
         }
 
@@ -101,15 +110,29 @@ const celeste = document.getElementById('celeste')
               this.nivel++
               this.eliminarEventosClick()
               if (this.nivel === (ULTIMO_NIVEL + 1)) {
-                // Ganó!
+                this.ganoElJuego()
               } else {
                 setTimeout(this.siguienteNivel, 1500)
               }
             }
           } else {
-            // Perdió
+            this.perdioElJuego()
           }
         }
+
+        ganoElJuego() {
+          swal('Platzi', 'Felicitaciones, ganaste el juego!', 'success')
+            .then(this.inicializar)
+        }
+
+        perdioElJuego() {
+          swal('Platzi', 'Lo lamentamos, perdiste :(', 'error')
+            .then(() => {
+              this.eliminarEventosClick()
+              this.inicializar()
+            })
+        }
+
       }
 
       function empezarJuego() {
